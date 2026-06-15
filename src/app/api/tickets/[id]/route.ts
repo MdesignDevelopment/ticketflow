@@ -23,6 +23,12 @@ export async function GET(_req: NextRequest, { params }: Params) {
   return NextResponse.json(ticket)
 }
 
+const HISTORY_TRACKED = [
+  'status', 'engineerId', 'designPartner', 'subcontractor',
+  'actualEnd', 'estimatedEnd', 'archivedAt',
+  'startDate', 'category', 'ticketNumber',
+] as const
+
 export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -52,6 +58,15 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }
   }
 
+  // Snapshot current values for history tracking
+  const trackedUpdates = HISTORY_TRACKED.filter(f => f in data)
+  let snapshot: Record<string, unknown> | null = null
+  if (trackedUpdates.length > 0) {
+    snapshot = await prisma.ticket.findUnique({
+      where: { id },
+      select: Object.fromEntries(trackedUpdates.map(f => [f, true])) as Record<string, true>,
+    }) as Record<string, unknown> | null
+  }
 
   if (data.status === 'DONE' || data.status === 'DONE_BY_L2') {
     const current = await prisma.ticket.findUnique({ where: { id }, select: { issueTopic: true, actualEnd: true, documentationStatus: true } })
@@ -96,6 +111,24 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         documentations: { select: { id: true, title: true } },
       },
     })
+
+    // Write history records for changed tracked fields
+    if (snapshot && trackedUpdates.length > 0) {
+      const userId = (session.user as any)?.id ?? null
+      const toStr = (v: unknown): string | null =>
+        v == null ? null : String(v instanceof Date ? v.toISOString() : v)
+      const records = trackedUpdates
+        .map(field => {
+          const oldValue = toStr(snapshot![field])
+          const newValue = toStr(data[field])
+          return oldValue !== newValue ? { ticketId: id, userId, field, oldValue, newValue } : null
+        })
+        .filter((r): r is NonNullable<typeof r> => r !== null)
+      if (records.length > 0) {
+        await prisma.ticketHistory.createMany({ data: records })
+      }
+    }
+
     return NextResponse.json(ticket)
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Unknown error'

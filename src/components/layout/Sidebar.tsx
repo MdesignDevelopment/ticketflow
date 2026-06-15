@@ -26,6 +26,16 @@ const nav = [
     ),
   },
   {
+    label: 'History',
+    href: '/history',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="12 8 12 12 14 14" />
+        <path d="M3.05 11a9 9 0 1 0 .5-4.5" /><polyline points="3 3 3 7 7 7" />
+      </svg>
+    ),
+  },
+  {
     label: 'Documentation',
     href: '/documentation',
     icon: (

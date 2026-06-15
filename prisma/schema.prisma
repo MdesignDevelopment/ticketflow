@@ -70,6 +70,7 @@ model User {
 
   tickets        Ticket[]
   solutions      Solution[]
+  ticketHistory  TicketHistory[]
 }
 
 model Ticket {
@@ -103,6 +104,7 @@ model Ticket {
   solution            Solution?           @relation(fields: [solutionId], references: [id])
   documentations      Documentation[]     @relation("TicketDocLinks")
   attachments         Attachment[]
+  history             TicketHistory[]
 }
 
 model Solution {
@@ -168,4 +170,19 @@ model SolutionTopic {
   name        String   @unique
   description String?  @db.Text
   createdAt   DateTime @default(now())
+}
+
+model TicketHistory {
+  id         String   @id @default(cuid())
+  ticketId   String
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  field      String
+  oldValue   String?
+  newValue   String?
+  createdAt  DateTime @default(now())
+
+  @@index([ticketId])
+  @@index([createdAt])
 }
