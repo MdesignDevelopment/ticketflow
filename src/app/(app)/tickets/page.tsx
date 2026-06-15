@@ -82,7 +82,7 @@ export default async function TicketsPage({
     LOWER(subcontractor) IN ('unit-t','jacops','equans','cas-vos','ptm','zte','denys','apk','constructel','fyber49','besix','hubicon','a-net','circet')
     AND NOT (
       (LOWER(subcontractor) = 'unit-t'       AND LOWER("designPartner") IN ('unit-t','yungo','esc','byon'))
-      OR (LOWER(subcontractor) = 'jacops'    AND LOWER("designPartner") IN ('jacops','cyient'))
+      OR (LOWER(subcontractor) = 'jacops'    AND LOWER("designPartner") IN ('jacops','cyient','keen wise'))
       OR (LOWER(subcontractor) = 'equans'    AND LOWER("designPartner") = 'equans')
       OR (LOWER(subcontractor) = 'cas-vos'   AND LOWER("designPartner") IN ('cas-vos','heta','keen wise'))
       OR (LOWER(subcontractor) = 'ptm'       AND LOWER("designPartner") = 'ptm')
