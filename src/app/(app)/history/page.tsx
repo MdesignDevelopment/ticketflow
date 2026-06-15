@@ -95,9 +95,6 @@ export default async function HistoryPage({
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold" style={{ color: 'var(--foreground)' }}>History</h1>
-        <p className="text-sm mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
-          {total.toLocaleString()} change{total !== 1 ? 's' : ''} recorded
-        </p>
       </div>
 
       {/* Filters */}
