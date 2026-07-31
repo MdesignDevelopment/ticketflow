@@ -2,12 +2,12 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "3005:3000"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/ticketflow
       DIRECT_URL: postgresql://postgres:postgres@db:5432/ticketflow
       NEXTAUTH_SECRET: super-secret-change-in-production
-      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_URL: http://localhost:3005
       AUTH_SECRET: super-secret-change-in-production
       AUTH_TRUST_HOST: "true"
       CLOUDINARY_CLOUD_NAME: dcqipxgoz

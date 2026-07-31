@@ -58,6 +58,7 @@ export default async function InternalDashboardPage() {
       kpis={{ totalTickets, ticketsDone, ticketsOnHold, ticketsOngoing, ticketsEscalated }}
       byStatus={byStatus}
       bySubcontractor={bySubcontractor}
+      role={role}
     />
   )
 }

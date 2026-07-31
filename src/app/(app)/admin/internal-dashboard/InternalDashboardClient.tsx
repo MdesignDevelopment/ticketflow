@@ -94,6 +94,7 @@ interface Props {
   kpis: Kpis
   byStatus: { name: string; value: number }[]
   bySubcontractor: { name: string; value: number }[]
+  role: string
 }
 
 // ─── Filter helpers ───────────────────────────────────────────────────────────
@@ -289,7 +290,8 @@ const PartnerBarTooltip = ({ active, payload, label }: any) => {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function InternalDashboardClient({ kpis, byStatus, bySubcontractor }: Props) {
+export default function InternalDashboardClient({ kpis, byStatus, bySubcontractor, role }: Props) {
+  const visibleTabs = role === 'EXTERN_PLUS' ? TABS.filter(t => t !== 'Engineers') : TABS
   const [activeTab, setActiveTab] = useState('General')
   const { totalTickets, ticketsDone, ticketsOnHold, ticketsOngoing, ticketsEscalated } = kpis
   const resolvedPct   = totalTickets ? Math.round(ticketsDone / totalTickets * 100) : 0
@@ -491,7 +493,7 @@ export default function InternalDashboardClient({ kpis, byStatus, bySubcontracto
 
       {/* Tab bar */}
       <div style={{ display: 'flex', marginBottom: '28px', borderBottom: '2px solid var(--border)' }}>
-        {TABS.map(tab => (
+        {visibleTabs.map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)} style={{
             padding: '8px 20px', fontSize: '14px', fontWeight: 600,
             background: 'none', border: 'none', cursor: 'pointer',
