@@ -10,6 +10,12 @@ export default auth((req) => {
   const isLoginPage = nextUrl.pathname === '/login'
   const isAuthApi = nextUrl.pathname.startsWith('/api/auth')
 
+  // The portal-metrics endpoint authenticates itself with a bearer secret
+  // (no session cookie) — let it through to the route handler.
+  if (nextUrl.pathname.startsWith('/api/portal-metrics')) {
+    return NextResponse.next()
+  }
+
   if (isLoginPage || isAuthApi) {
     if (isLoginPage && session) {
       return NextResponse.redirect(new URL('/dashboard', nextUrl))
