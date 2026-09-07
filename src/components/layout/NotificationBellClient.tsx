@@ -38,7 +38,7 @@ export default function NotificationBellClient({
   const scrollable = tickets.length > 5
 
   return (
-    <div ref={ref} style={{ position: 'fixed', top: '14px', right: '20px', zIndex: 50 }}>
+    <div ref={ref} style={{ position: 'relative' }}>
       {/* Bell button */}
       <button
         onClick={() => setOpen(o => !o)}
@@ -87,6 +87,7 @@ export default function NotificationBellClient({
           borderRadius: '12px',
           boxShadow: '0 8px 28px rgba(0,0,0,0.13)',
           overflow: 'hidden',
+          zIndex: 50,
         }}>
           {/* Header */}
           <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
@@ -142,16 +143,6 @@ export default function NotificationBellClient({
             ))}
           </div>
 
-          {/* Footer */}
-          <div style={{
-            padding: '9px 16px',
-            borderTop: '1px solid var(--border)',
-            background: 'var(--muted)',
-          }}>
-            <p style={{ fontSize: '11px', color: 'var(--muted-foreground)', textAlign: 'center' }}>
-              Close the ticket or send an email to the user
-            </p>
-          </div>
         </div>
       )}
     </div>

@@ -16,12 +16,21 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar user={{ name: session.user?.name, email: session.user?.email, role: user?.role }} />
-      <main className="flex-1 overflow-y-auto" style={{ background: 'var(--background)' }}>
-        {children}
-      </main>
-      {(isEngineer || isAdmin) && user?.id && (
-        <NotificationBell userId={user.id} isAdmin={isAdmin} />
-      )}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {(isEngineer || isAdmin) && user?.id && (
+          <div style={{
+            display: 'flex', justifyContent: 'flex-end', alignItems: 'center',
+            padding: '8px 20px', flexShrink: 0,
+            borderBottom: '1px solid var(--border)',
+            background: 'var(--background)',
+          }}>
+            <NotificationBell userId={user.id} isAdmin={isAdmin} />
+          </div>
+        )}
+        <main className="flex-1 overflow-y-auto" style={{ background: 'var(--background)' }}>
+          {children}
+        </main>
+      </div>
     </div>
   )
 }
