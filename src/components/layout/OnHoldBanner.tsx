@@ -1,17 +1,17 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 
-export default async function OnHoldBanner({ userId }: { userId: string }) {
+export default async function OnHoldBanner({ userId, isAdmin }: { userId: string; isAdmin?: boolean }) {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
   const tickets = await prisma.ticket.findMany({
     where: {
-      engineerId: userId,
+      ...(isAdmin ? {} : { engineerId: userId }),
       status: 'ON_HOLD',
       onHoldAt: { lte: sevenDaysAgo },
       archivedAt: null,
     },
-    select: { id: true, ticketNumber: true, onHoldAt: true },
+    select: { id: true, ticketNumber: true, onHoldAt: true, engineer: { select: { name: true } } },
     orderBy: { onHoldAt: 'asc' },
   })
 
@@ -56,7 +56,7 @@ export default async function OnHoldBanner({ userId }: { userId: string }) {
               }}>
               {t.ticketNumber}
               <span style={{ fontWeight: 400, marginLeft: '4px', fontFamily: 'inherit' }}>
-                ({daysSince(t.onHoldAt!)}d)
+                ({daysSince(t.onHoldAt!)}d{isAdmin ? ` · ${t.engineer.name}` : ''})
               </span>
             </Link>
           ))}
