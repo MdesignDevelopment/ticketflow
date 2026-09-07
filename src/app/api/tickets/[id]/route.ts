@@ -68,6 +68,16 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     }) as Record<string, unknown> | null
   }
 
+  // Auto-manage onHoldAt based on status transitions
+  if ('status' in data) {
+    const currentStatus = snapshot?.status as string | undefined
+    if (data.status === 'ON_HOLD' && currentStatus !== 'ON_HOLD') {
+      data.onHoldAt = new Date()
+    } else if (data.status !== 'ON_HOLD') {
+      data.onHoldAt = null
+    }
+  }
+
   if (data.status === 'DONE' || data.status === 'DONE_BY_L2') {
     const current = await prisma.ticket.findUnique({ where: { id }, select: { issueTopic: true, actualEnd: true, documentationStatus: true } })
     const issueTopic = (data.issueTopic ?? current?.issueTopic) as string | null
